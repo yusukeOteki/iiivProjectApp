@@ -24,13 +24,13 @@ class CompoundLists extends React.Component {
   }
 
   render() {
-    const { classes, compounds_fractions, compounds_checked, _onchangeY, _onchange, _onchangefraction } = this.props;
+    const { classes, compounds_fractions, compounds_checked, _onchange, _onchangefraction, onChageFilter } = this.props;
 
     return (
       <GridPaper xs={12}>
         <List className={classes.root} subheader={<li />}>
           {Object.keys(compounds).map((compound, i) =>
-            <CompoundItem key={`section-${compound}`} i={i} classes={classes} compounds={compounds} compound={compound} compounds_fractions={compounds_fractions[compound]} compounds_checked={compounds_checked.indexOf(compound)} _onchange={_onchange} _onchangefraction={_onchangefraction} />
+            <CompoundItem key={`section-${compound}`} i={i} classes={classes} compounds={compounds} compound={compound} compounds_fractions={compounds_fractions[compound]} compounds_checked={compounds_checked.indexOf(compound)} _onchange={_onchange} _onchangefraction={_onchangefraction} onChageFilter={onChageFilter} />
           )}
         </List>
       </GridPaper>

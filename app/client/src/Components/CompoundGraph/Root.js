@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import { 
   Chart, CompoundList, FilterList, SettingGraph, GridPaper, 
-  xlabels, ylabels, compounds, compound_data, compounds_fractions, applyFilter, setGraphData, getGraphRange 
+  xlabels, ylabels, compounds, compound_data, compounds_fractions, applyFilter, setGraphData, getGraphRange
 } from '.';
 
 const styles = theme => ({
@@ -36,19 +36,11 @@ class Root extends React.Component {
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
-    let filter = {
-      a_min: { init: 5, value: 5, on: false }, a_max: { init: 7, value: 7, on: false },
-      Eg_min: { init: 0, value: 0, on: false }, Eg_max: { init: 3, value: 3, on: false },
-      CB_min: { init: -5, value: -5, on: false }, CB_max: { init: -3, value: -3, on: false },
-      VB_min: { init: -7, value: -7, on: false }, VB_max: { init: -4, value: -4, on: false },
-      direct_only: { on: false }, indirect_only: { on: false }
-    };
 
     this.state = {
       base_a, base_a_out, xlabel, ylabel, compounds_fractions, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition,
       compounds, compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out,
       left, right, bottom, top,
-      filter,
     };
     this._onchange = this._onchange.bind(this);
     this._onchangeY = this._onchangeY.bind(this);
@@ -60,7 +52,7 @@ class Root extends React.Component {
     this._onchangeX = this._onchangeX.bind(this);
     this._onchangeLatticeConstant = this._onchangeLatticeConstant.bind(this);
     this._getCursorPosition = this._getCursorPosition.bind(this);
-    this._onChamgeFilter = this._onChamgeFilter.bind(this);
+    this._onChageFilter = this._onChageFilter.bind(this);
   }
 
   // Zoom in func.
@@ -179,34 +171,34 @@ class Root extends React.Component {
   }
 
 
-  _onChamgeFilter(e, type) {
-    let filter = JSON.parse(JSON.stringify(this.state.filter));
+  _onChageFilter(e, target, type) {
+    let compounds_fractions = JSON.parse(JSON.stringify(this.state.compounds_fractions));
     if (type === 'a_on') {
-      filter.a_min.on = !filter.a_min.on;
-      filter.a_max.on = !filter.a_max.on;
+      compounds_fractions[target].a_min.on = !compounds_fractions[target].a_min.on;
+      compounds_fractions[target].a_max.on = !compounds_fractions[target].a_max.on;
     } else if (type === 'Eg_on') {
-      filter.Eg_min.on = !filter.Eg_min.on;
-      filter.Eg_max.on = !filter.Eg_max.on;
+      compounds_fractions[target].Eg_min.on = !compounds_fractions[target].Eg_min.on;
+      compounds_fractions[target].Eg_max.on = !compounds_fractions[target].Eg_max.on;
     } else if (type === 'CB_on') {
-      filter.CB_min.on = !filter.CB_min.on;
-      filter.CB_max.on = !filter.CB_max.on;
+      compounds_fractions[target].CB_min.on = !compounds_fractions[target].CB_min.on;
+      compounds_fractions[target].CB_max.on = !compounds_fractions[target].CB_max.on;
     } else if (type === 'VB_on') {
-      filter.VB_min.on = !filter.VB_min.on;
-      filter.VB_max.on = !filter.VB_max.on;
+      compounds_fractions[target].VB_min.on = !compounds_fractions[target].VB_min.on;
+      compounds_fractions[target].VB_max.on = !compounds_fractions[target].VB_max.on;
     } else if (type === 'direct') {
-      filter.direct_only.on = !filter.direct_only.on;
+      compounds_fractions[target].direct_only.on = !compounds_fractions[target].direct_only.on;
     } else if (type === 'indirect') {
-      filter.indirect_only.on = !filter.indirect_only.on;
+      compounds_fractions[target].indirect_only.on = !compounds_fractions[target].indirect_only.on;
     } else {
-      filter[type].value = e.target.value ? Number(e.target.value) : filter[type].init;
+      compounds_fractions[target][type].value = e.target.value ? Number(e.target.value) : compounds_fractions[target][type].init;
     }
-    this.setState({ filter });
+    this.setState({ compounds_fractions });
   }
 
   render() {
-    const { compounds, compounds_checked, compounds_fractions, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, filter } = this.state;
+    const { compounds, compounds_checked, compounds_fractions, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top } = this.state;
     const { classes } = this.props;
-    const [compound_raws, binaries_data] = applyFilter(this.state.compound_raws, this.state.binaries_data, filter);
+    const [compound_raws, binaries_data] = applyFilter(this.state.compound_raws, this.state.binaries_data, compounds_fractions);
     return (
       <Grid container className={classes.root} >
         <Grid container item xs={6}>
@@ -236,10 +228,10 @@ class Root extends React.Component {
           </GridPaper>
         </Grid>
         <Grid container item xs={3}>
-          <CompoundList style={{ height: '100%' }} _onchange={this._onchange} _onchangeY={this._onchangeY} _onchangefraction={this._onchangefraction} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked} />
+          <CompoundList style={{ height: '100%' }} _onchange={this._onchange} _onchangeY={this._onchangeY} _onchangefraction={this._onchangefraction} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked} onChageFilter={this._onChageFilter} />
         </Grid>
         <Grid container item xs={3}>
-          <FilterList style={{ height: '100%' }} filter={filter} onChamgeFilter={this._onChamgeFilter} />
+          <FilterList style={{ height: '100%' }} filter={compounds_fractions['entire']} onChageFilter={this._onChageFilter} />
         </Grid>
       </Grid>
     )

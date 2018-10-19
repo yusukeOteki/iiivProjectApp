@@ -1,1 +1,0 @@
-electron-packager ./app/ iiivProject --platform=win32 --arch=x64 --out=builds/windows
