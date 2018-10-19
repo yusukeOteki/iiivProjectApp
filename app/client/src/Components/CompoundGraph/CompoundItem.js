@@ -114,6 +114,14 @@ class CompoundItem extends React.Component {
               <Checkbox checked={compounds_fractions.a_min.on} onChange={(e) => onChageFilter(e, compound, 'a_on')} value="a" color="primary" />
             </ListItemSecondaryAction>
           </ListItem>
+          <ListItem key={`p-${i}`}>
+            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'p_min')} name="pMin" step={0.001} value={compounds_fractions.p_min.value} />
+            <span>&nbsp;≦&nbsp;{`p`}&nbsp;≦&nbsp;</span>
+            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'p_max')} name="pMax" step={0.001} value={compounds_fractions.p_max.value} />
+            <ListItemSecondaryAction>
+              <Checkbox checked={compounds_fractions.p_min.on} onChange={(e) => onChageFilter(e, compound, 'p_on')} value="p" color="primary" />
+            </ListItemSecondaryAction>
+          </ListItem>
           <ListItem key={`Eg-${i}`}>
             <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'Eg_min')} name="EgMin" step={0.001} min={compounds_fractions.Eg_min.init} max={compounds_fractions.Eg_max.init} value={compounds_fractions.Eg_min.value} />
             <span>&nbsp;≦&nbsp;{`Eg`}&nbsp;≦&nbsp;</span>

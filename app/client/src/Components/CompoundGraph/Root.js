@@ -126,7 +126,6 @@ class Root extends React.Component {
 
   // Changing the x axis func.
   _onchangeX(e) {
-    console.log(e)
     const { ylabel, compounds_fractions } = this.state;
     let compounds_checked = this.state.compounds_checked.concat();
     let base_a = e.target.value === 'Lattice mismatch [%]' ? this.state.base_a_out : 0;
@@ -176,6 +175,9 @@ class Root extends React.Component {
     if (type === 'a_on') {
       compounds_fractions[target].a_min.on = !compounds_fractions[target].a_min.on;
       compounds_fractions[target].a_max.on = !compounds_fractions[target].a_max.on;
+    } else if (type === 'p_on') {
+      compounds_fractions[target].p_min.on = !compounds_fractions[target].p_min.on;
+      compounds_fractions[target].p_max.on = !compounds_fractions[target].p_max.on;
     } else if (type === 'Eg_on') {
       compounds_fractions[target].Eg_min.on = !compounds_fractions[target].Eg_min.on;
       compounds_fractions[target].Eg_max.on = !compounds_fractions[target].Eg_max.on;
