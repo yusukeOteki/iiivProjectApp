@@ -24,10 +24,9 @@ class Root extends React.Component {
     super(props);
     let xlabel = xlabels[0];
     let ylabel = ylabels[0];
-    let base_a = 0;
-    let base_a_out = compound_data['GaAs'][0].a;
+    let base_a = compound_data['GaAs'][0].a;
     let compounds_checked = ["GaAs", "InAs", "AlAs", "GaSb", "InSb", "AlSb", "InP", "GaP", "AlP"]
-    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let line_hight = 0;
     let refAreaLeft = '';
     let refAreaRight = '';
@@ -38,7 +37,7 @@ class Root extends React.Component {
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
 
     this.state = {
-      base_a, base_a_out, xlabel, ylabel, compounds_fractions, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition,
+      base_a, xlabel, ylabel, compounds_fractions, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition,
       compounds, compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out,
       left, right, bottom, top,
     };
@@ -102,10 +101,10 @@ class Root extends React.Component {
 
   // Changing the compounds func.
   _onchange(e) {
-    const { base_a, ylabel, compounds_fractions } = this.state;
+    const { base_a, xlabel, ylabel, compounds_fractions } = this.state;
     let compounds_checked = this.state.compounds_checked.concat();
     (e.target.checked) ? compounds_checked.push(e.target.value) : compounds_checked.splice(compounds_checked.indexOf(e.target.value), 1);
-    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
@@ -126,11 +125,10 @@ class Root extends React.Component {
 
   // Changing the x axis func.
   _onchangeX(e) {
-    const { ylabel, compounds_fractions } = this.state;
+    const { ylabel, base_a, compounds_fractions } = this.state;
     let compounds_checked = this.state.compounds_checked.concat();
-    let base_a = e.target.value === 'Lattice mismatch [%]' ? this.state.base_a_out : 0;
     let xlabel = e.target.value;
-    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
@@ -141,23 +139,22 @@ class Root extends React.Component {
   _onchangeLatticeConstant(a) {
     const { xlabel, ylabel, compounds_fractions } = this.state;
     let compounds_checked = this.state.compounds_checked.concat();
-    let base_a_out = a
-    let base_a = xlabel === 'Lattice mismatch [%]' ? base_a_out : 0
-    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let base_a = a
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
-    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, base_a, base_a_out });
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, base_a });
   }
 
   // Changing the fraction of compounds
   _onchangefraction(e, name, axis) {
-    const { base_a, ylabel } = this.state;
+    const { base_a, ylabel, xlabel } = this.state;
     let compounds_checked = this.state.compounds_checked.concat();
     let compounds_fractions = JSON.parse(JSON.stringify(this.state.compounds_fractions));
     if (name) [ compounds_fractions[name][axis + 'Min'], compounds_fractions[name][axis + 'Max'] ] = [ e[0], e[1] ];
     else compounds_fractions[e.target.className][e.target.name] = Number(e.target.value);
-    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
@@ -175,9 +172,9 @@ class Root extends React.Component {
     if (type === 'a_on') {
       compounds_fractions[target].a_min.on = !compounds_fractions[target].a_min.on;
       compounds_fractions[target].a_max.on = !compounds_fractions[target].a_max.on;
-    } else if (type === 'p_on') {
-      compounds_fractions[target].p_min.on = !compounds_fractions[target].p_min.on;
-      compounds_fractions[target].p_max.on = !compounds_fractions[target].p_max.on;
+    } else if (type === 'm_on') {
+      compounds_fractions[target].m_min.on = !compounds_fractions[target].m_min.on;
+      compounds_fractions[target].m_max.on = !compounds_fractions[target].m_max.on;
     } else if (type === 'Eg_on') {
       compounds_fractions[target].Eg_min.on = !compounds_fractions[target].Eg_min.on;
       compounds_fractions[target].Eg_max.on = !compounds_fractions[target].Eg_max.on;

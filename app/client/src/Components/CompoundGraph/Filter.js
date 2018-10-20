@@ -56,11 +56,11 @@ class Filter extends React.Component {
         </ul>
         <ul className={classes.ul}>
           <ListSubheader>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, 'entire', 'p_min')} name="pMin" step={0.001} value={filter.p_min.value} />
-            <span>&nbsp;≦&nbsp;{`p`}&nbsp;≦&nbsp;</span>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, 'entire', 'p_max')} name="pMax" step={0.001} value={filter.p_max.value} />
+            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, 'entire', 'm_min')} name="mMin" step={0.001} value={filter.m_min.value} />
+            <span>&nbsp;≦&nbsp;{`Δa`}&nbsp;≦&nbsp;</span>
+            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, 'entire', 'm_max')} name="mMax" step={0.001} value={filter.m_max.value} />
             <ListItemSecondaryAction>
-              <Switch id={`p`} color="primary" value={"p"} onChange={(e) => onChageFilter(e, 'entire', 'p_on')} checked={filter.p_min.on} />
+              <Switch id={`m`} color="primary" value={"m"} onChange={(e) => onChageFilter(e, 'entire', 'm_on')} checked={filter.m_min.on} />
             </ListItemSecondaryAction>
           </ListSubheader>
         </ul>

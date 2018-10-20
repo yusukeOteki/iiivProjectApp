@@ -106,58 +106,65 @@ class CompoundItem extends React.Component {
               )
             }
           })()}
-          <ListItem key={`a-${i}`}>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'a_min')} name="aMin" step={0.001} min={compounds_fractions.a_min.init} max={compounds_fractions.a_max.init} value={compounds_fractions.a_min.value} />
-            <span>&nbsp;≦&nbsp;{`a`}&nbsp;≦&nbsp;</span>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'a_max')} name="aMax" step={0.001} min={compounds_fractions.a_min.init} max={compounds_fractions.a_max.init} value={compounds_fractions.a_max.value} />
-            <ListItemSecondaryAction>
-              <Checkbox checked={compounds_fractions.a_min.on} onChange={(e) => onChageFilter(e, compound, 'a_on')} value="a" color="primary" />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem key={`p-${i}`}>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'p_min')} name="pMin" step={0.001} value={compounds_fractions.p_min.value} />
-            <span>&nbsp;≦&nbsp;{`p`}&nbsp;≦&nbsp;</span>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'p_max')} name="pMax" step={0.001} value={compounds_fractions.p_max.value} />
-            <ListItemSecondaryAction>
-              <Checkbox checked={compounds_fractions.p_min.on} onChange={(e) => onChageFilter(e, compound, 'p_on')} value="p" color="primary" />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem key={`Eg-${i}`}>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'Eg_min')} name="EgMin" step={0.001} min={compounds_fractions.Eg_min.init} max={compounds_fractions.Eg_max.init} value={compounds_fractions.Eg_min.value} />
-            <span>&nbsp;≦&nbsp;{`Eg`}&nbsp;≦&nbsp;</span>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'Eg_max')} name="EgMax" step={0.001} min={compounds_fractions.Eg_min.init} max={compounds_fractions.Eg_max.init} value={compounds_fractions.Eg_max.value} />
-            <ListItemSecondaryAction>
-              <Checkbox checked={compounds_fractions.Eg_min.on} onChange={(e) => onChageFilter(e, compound, 'Eg_on')} value="Eg" color="primary" />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem key={`CB-${i}`}>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'CB_min')} name="CBMin" step={0.001} min={compounds_fractions.CB_min.init} max={compounds_fractions.CB_max.init} value={compounds_fractions.CB_min.value} />
-            <span>&nbsp;≦&nbsp;{`CB`}&nbsp;≦&nbsp;</span>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'CB_max')} name="CBMax" step={0.001} min={compounds_fractions.CB_min.init} max={compounds_fractions.CB_max.init} value={compounds_fractions.CB_max.value} />
-            <ListItemSecondaryAction>
-              <Checkbox checked={compounds_fractions.CB_min.on} onChange={(e) => onChageFilter(e, compound, 'CB_on')} value="CB" color="primary" />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem key={`VB-${i}`}>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'VB_min')} name="VBMin" step={0.001} min={compounds_fractions.VB_min.init} max={compounds_fractions.VB_max.init} value={compounds_fractions.VB_min.value} />
-            <span>&nbsp;≦&nbsp;{`VB`}&nbsp;≦&nbsp;</span>
-            <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'VB_max')} name="VBMax" step={0.001} min={compounds_fractions.VB_min.init} max={compounds_fractions.VB_max.init} value={compounds_fractions.VB_max.value} />
-            <ListItemSecondaryAction>
-              <Checkbox checked={compounds_fractions.VB_min.on} onChange={(e) => onChageFilter(e, compound, 'VB_on')} value="VB" color="primary" />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`direct only`} />
-            <ListItemSecondaryAction>
-              <Checkbox checked={compounds_fractions.direct_only.on} onChange={(e) => onChageFilter(e, compound, 'direct')} value="d" color="primary" />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`indirect only`} />
-            <ListItemSecondaryAction>
-              <Checkbox checked={compounds_fractions.indirect_only.on} onChange={(e) => onChageFilter(e, compound, 'indirect')} value="id" color="primary" />
-            </ListItemSecondaryAction>
-          </ListItem>
+          {(() => {
+            if (compounds_fractions.x !== null) {
+              return [
+                <ListItem key={`a-${i}`}>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'a_min')} name="aMin" step={0.001} min={compounds_fractions.a_min.init} max={compounds_fractions.a_max.init} value={compounds_fractions.a_min.value} />
+                  <span>&nbsp;≦&nbsp;{`a`}&nbsp;≦&nbsp;</span>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'a_max')} name="aMax" step={0.001} min={compounds_fractions.a_min.init} max={compounds_fractions.a_max.init} value={compounds_fractions.a_max.value} />
+                  <ListItemSecondaryAction>
+                    <Checkbox checked={compounds_fractions.a_min.on} onChange={(e) => onChageFilter(e, compound, 'a_on')} value="a" color="primary" />
+                  </ListItemSecondaryAction>
+                </ListItem>,
+                <ListItem key={`m-${i}`}>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'm_min')} name="mMin" step={0.001} value={compounds_fractions.m_min.value} />
+                  <span>&nbsp;≦&nbsp;{`Δa`}&nbsp;≦&nbsp;</span>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'm_max')} name="mMax" step={0.001} value={compounds_fractions.m_max.value} />
+                  <ListItemSecondaryAction>
+                    <Checkbox checked={compounds_fractions.m_min.on} onChange={(e) => onChageFilter(e, compound, 'm_on')} value="m" color="primary" />
+                  </ListItemSecondaryAction>
+                </ListItem>,
+                <ListItem key={`Eg-${i}`}>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'Eg_min')} name="EgMin" step={0.001} min={compounds_fractions.Eg_min.init} max={compounds_fractions.Eg_max.init} value={compounds_fractions.Eg_min.value} />
+                  <span>&nbsp;≦&nbsp;{`Eg`}&nbsp;≦&nbsp;</span>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'Eg_max')} name="EgMax" step={0.001} min={compounds_fractions.Eg_min.init} max={compounds_fractions.Eg_max.init} value={compounds_fractions.Eg_max.value} />
+                  <ListItemSecondaryAction>
+                    <Checkbox checked={compounds_fractions.Eg_min.on} onChange={(e) => onChageFilter(e, compound, 'Eg_on')} value="Eg" color="primary" />
+                  </ListItemSecondaryAction>
+                </ListItem>,
+                <ListItem key={`CB-${i}`}>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'CB_min')} name="CBMin" step={0.001} min={compounds_fractions.CB_min.init} max={compounds_fractions.CB_max.init} value={compounds_fractions.CB_min.value} />
+                  <span>&nbsp;≦&nbsp;{`CB`}&nbsp;≦&nbsp;</span>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'CB_max')} name="CBMax" step={0.001} min={compounds_fractions.CB_min.init} max={compounds_fractions.CB_max.init} value={compounds_fractions.CB_max.value} />
+                  <ListItemSecondaryAction>
+                    <Checkbox checked={compounds_fractions.CB_min.on} onChange={(e) => onChageFilter(e, compound, 'CB_on')} value="CB" color="primary" />
+                  </ListItemSecondaryAction>
+                </ListItem>,
+                <ListItem key={`VB-${i}`}>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'VB_min')} name="VBMin" step={0.001} min={compounds_fractions.VB_min.init} max={compounds_fractions.VB_max.init} value={compounds_fractions.VB_min.value} />
+                  <span>&nbsp;≦&nbsp;{`VB`}&nbsp;≦&nbsp;</span>
+                  <input type="number" className={classes.filter} onChange={(e) => onChageFilter(e, compound, 'VB_max')} name="VBMax" step={0.001} min={compounds_fractions.VB_min.init} max={compounds_fractions.VB_max.init} value={compounds_fractions.VB_max.value} />
+                  <ListItemSecondaryAction>
+                    <Checkbox checked={compounds_fractions.VB_min.on} onChange={(e) => onChageFilter(e, compound, 'VB_on')} value="VB" color="primary" />
+                  </ListItemSecondaryAction>
+                </ListItem>,
+                <ListItem key={`direct-${i}`}>
+                  <ListItemText primary={`direct only`} />
+                  <ListItemSecondaryAction>
+                    <Checkbox checked={compounds_fractions.direct_only.on} onChange={(e) => onChageFilter(e, compound, 'direct')} value="d" color="primary" />
+                  </ListItemSecondaryAction>
+                </ListItem>,
+                <ListItem key={`indirect-${i}`}>
+                  <ListItemText primary={`indirect only`} />
+                  <ListItemSecondaryAction>
+                    <Checkbox checked={compounds_fractions.indirect_only.on} onChange={(e) => onChageFilter(e, compound, 'indirect')} value="id" color="primary" />
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ]
+            }
+          })()}
+
         </ul>
       </li>
     );
