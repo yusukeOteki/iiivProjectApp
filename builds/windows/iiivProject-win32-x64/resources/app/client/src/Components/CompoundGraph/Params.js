@@ -52,14 +52,30 @@ const compounds_fractions = (() => {
       'yMax': (compound_data[key][0].y === null) ? null : 100,
       'z': (compound_data[key][0].z === null) ? null : 10,
       'zMin': (compound_data[key][0].z === null) ? null : 0,
-      'zMax': (compound_data[key][0].z === null) ? null : 100
+      'zMax': (compound_data[key][0].z === null) ? null : 100,
+      'a_min': { 'init': 5, 'value': 5, 'on': false }, 'a_max': { 'init': 7, 'value': 7, 'on': false },
+      'm_min': { 'init': -10, 'value': -10, 'on': false }, 'm_max': { 'init': 10, 'value': 10, 'on': false },
+      'Eg_min': { 'init': 0, 'value': 0, 'on': false }, 'Eg_max': { 'init': 3, 'value': 3, 'on': false },
+      'CB_min': { 'init': -5, 'value': -5, 'on': false }, 'CB_max': { 'init': -3, 'value': -3, 'on': false },
+      'VB_min': { 'init': -7, 'value': -7, 'on': false }, 'VB_max': { 'init': -4, 'value': -4, 'on': false },
+      'direct_only': { 'on': false },
+      'indirect_only': { 'on': false }
     };
+  }
+  compounds_fractions_temp['entire'] = {
+    'a_min': { 'init': 5, 'value': 5, 'on': false }, 'a_max': { 'init': 7, 'value': 7, 'on': false },
+    'm_min': { 'init': -10, 'value': -10, 'on': false }, 'm_max': { 'init': 10, 'value': 10, 'on': false },
+    'Eg_min': { 'init': 0, 'value': 0, 'on': false }, 'Eg_max': { 'init': 3, 'value': 3, 'on': false },
+    'CB_min': { 'init': -5, 'value': -5, 'on': false }, 'CB_max': { 'init': -3, 'value': -3, 'on': false },
+    'VB_min': { 'init': -7, 'value': -7, 'on': false }, 'VB_max': { 'init': -4, 'value': -4, 'on': false },
+    'direct_only': { 'on': false },
+    'indirect_only': { 'on': false }
   }
   return compounds_fractions_temp;
 })();
 
 // updating indicating data
-const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
+const setGraphData = (mode, xlabel, temp_compounds_checked, fraction, base_a) => {
   let [temp_raws, temp_compound_raws, temp_binaries_raws, temp_compound_raws_C2V, directs] = [[], [], [], [], [], []];
 
   for (let i in temp_compounds_checked) {
@@ -98,7 +114,8 @@ const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
   }
 
   temp_raws.map(raws => {
-    raws.p = base_a > 0 ? (raws.a - base_a) / base_a * 100 : raws.a
+    raws.m = (raws.a - base_a) / base_a * 100;
+    raws.p = xlabel === "Lattice mismatch [%]" ? raws.m : raws.a;
   })
 
   Object.keys(compounds).map(binary =>
@@ -123,20 +140,36 @@ const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
 const applyFilter = (compound_raws, binaries_data, filter) =>
   [
     JSON.parse(JSON.stringify(compound_raws)).map(list => list.filter(item =>
-      (filter.a_min.on ? (filter.a_min.value <= item.a && item.a <= filter.a_max.value) : true) &&
-      (filter.Eg_min.on ? (filter.Eg_min.value <= item.Eg && item.Eg <= filter.Eg_max.value) : true) &&
-      (filter.CB_min.on ? (filter.CB_min.value <= item.CB && item.CB <= filter.CB_max.value) : true) &&
-      (filter.VB_min.on ? (filter.VB_min.value <= item.VB && item.VB <= filter.VB_max.value) : true) &&
-      (filter.direct_only.on ? (item.direct === 1) : true) &&
-      (filter.indirect_only.on ? (item.direct === 0) : true)
+      (filter[item.compound].a_min.on ? (filter[item.compound].a_min.value <= item.a && item.a <= filter[item.compound].a_max.value) : true) &&
+      (filter[item.compound].m_min.on ? (filter[item.compound].m_min.value <= item.m && item.m <= filter[item.compound].m_max.value) : true) &&
+      (filter[item.compound].Eg_min.on ? (filter[item.compound].Eg_min.value <= item.Eg && item.Eg <= filter[item.compound].Eg_max.value) : true) &&
+      (filter[item.compound].CB_min.on ? (filter[item.compound].CB_min.value <= item.CB && item.CB <= filter[item.compound].CB_max.value) : true) &&
+      (filter[item.compound].VB_min.on ? (filter[item.compound].VB_min.value <= item.VB && item.VB <= filter[item.compound].VB_max.value) : true) &&
+      (filter[item.compound].direct_only.on ? (item.direct === 1) : true) &&
+      (filter[item.compound].indirect_only.on ? (item.direct === 0) : true) &&
+      (filter.entire.a_min.on ? (filter.entire.a_min.value <= item.a && item.a <= filter.entire.a_max.value) : true) &&
+      (filter.entire.m_min.on ? (filter.entire.m_min.value <= item.m && item.m <= filter.entire.m_max.value) : true) &&
+      (filter.entire.Eg_min.on ? (filter.entire.Eg_min.value <= item.Eg && item.Eg <= filter.entire.Eg_max.value) : true) &&
+      (filter.entire.CB_min.on ? (filter.entire.CB_min.value <= item.CB && item.CB <= filter.entire.CB_max.value) : true) &&
+      (filter.entire.VB_min.on ? (filter.entire.VB_min.value <= item.VB && item.VB <= filter.entire.VB_max.value) : true) &&
+      (filter.entire.direct_only.on ? (item.direct === 1) : true) &&
+      (filter.entire.indirect_only.on ? (item.direct === 0) : true)
     )),
     JSON.parse(JSON.stringify(binaries_data)).filter(list =>
-      (filter.a_min.on ? (filter.a_min.value <= list.a && list.a <= filter.a_max.value) : true) &&
-      (filter.Eg_min.on ? (filter.Eg_min.value <= list.Eg && list.Eg <= filter.Eg_max.value) : true) &&
-      (filter.CB_min.on ? (filter.CB_min.value <= list.CB && list.CB <= filter.CB_max.value) : true) &&
-      (filter.VB_min.on ? (filter.VB_min.value <= list.VB && list.VB <= filter.VB_max.value) : true) &&
-      (filter.direct_only.on ? (list.direct === 1) : true) &&
-      (filter.indirect_only.on ? (list.direct === 0) : true)
+      (filter[list.compound].a_min.on ? (filter[list.compound].a_min.value <= list.a && list.a <= filter[list.compound].a_max.value) : true) &&
+      (filter[list.compound].m_min.on ? (filter[list.compound].m_min.value <= list.m && list.m <= filter[list.compound].m_max.value) : true) &&
+      (filter[list.compound].Eg_min.on ? (filter[list.compound].Eg_min.value <= list.Eg && list.Eg <= filter[list.compound].Eg_max.value) : true) &&
+      (filter[list.compound].CB_min.on ? (filter[list.compound].CB_min.value <= list.CB && list.CB <= filter[list.compound].CB_max.value) : true) &&
+      (filter[list.compound].VB_min.on ? (filter[list.compound].VB_min.value <= list.VB && list.VB <= filter[list.compound].VB_max.value) : true) &&
+      (filter[list.compound].direct_only.on ? (list.direct === 1) : true) &&
+      (filter[list.compound].indirect_only.on ? (list.direct === 0) : true) &&
+      (filter.entire.a_min.on ? (filter.entire.a_min.value <= list.a && list.a <= filter.entire.a_max.value) : true) &&
+      (filter.entire.m_min.on ? (filter.entire.m_min.value <= list.m && list.m <= filter.entire.m_max.value) : true) &&
+      (filter.entire.Eg_min.on ? (filter.entire.Eg_min.value <= list.Eg && list.Eg <= filter.entire.Eg_max.value) : true) &&
+      (filter.entire.CB_min.on ? (filter.entire.CB_min.value <= list.CB && list.CB <= filter.entire.CB_max.value) : true) &&
+      (filter.entire.VB_min.on ? (filter.entire.VB_min.value <= list.VB && list.VB <= filter.entire.VB_max.value) : true) &&
+      (filter.entire.direct_only.on ? (list.direct === 1) : true) &&
+      (filter.entire.indirect_only.on ? (list.direct === 0) : true)
     )
   ]
 

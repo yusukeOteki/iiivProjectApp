@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 import React from 'react';
 import isEqual from 'lodash.isEqual';
-import {GridPaper, Filter} from "./index";
+import {GridPaper, Filter} from ".";
 
 export default class FilterList extends React.Component {
 
@@ -10,11 +10,11 @@ export default class FilterList extends React.Component {
   }
 
   render() {
-    const { filter, onChamgeFilter } = this.props;
+    const { filter, onChageFilter } = this.props;
 
     return (
       <GridPaper xs={12}>
-        <Filter style={{ height: '100%' }} filter={filter} onChamgeFilter={onChamgeFilter} />
+        <Filter style={{ height: '100%' }} filter={filter} onChageFilter={onChageFilter} />
       </GridPaper>
     )
   }

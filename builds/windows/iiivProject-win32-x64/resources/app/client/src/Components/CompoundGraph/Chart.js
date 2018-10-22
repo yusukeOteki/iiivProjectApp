@@ -64,7 +64,7 @@ export default class SimpleScatterChart extends React.Component {
   }
 
   render() {
-    const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition, filter } = this.props;
+    const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition } = this.props;
     return (
       <ResponsiveContainer height={900 * 2 / 3} width="100%">
         <ScatterChart margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
