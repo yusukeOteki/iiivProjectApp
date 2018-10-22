@@ -115,6 +115,7 @@ class Root extends React.Component {
   _onchangeY(e) {
     const { xlabel, base_a, compounds_fractions } = this.state;
     let compounds_checked = this.state.compounds_checked.concat();
+    console.log(e.target.value)
     let ylabel = e.target.value;
     let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
