@@ -61,7 +61,6 @@ class CompoundLists extends React.Component {
   render() {
     const { classes, compounds_fractions, compounds_checked, _onchange, _onchangefraction, onChageFilter } = this.props;
     const { compoundList } = this.state;
-
     return (
       <GridPaper xs={12}>
         <input onChange={this.search} />

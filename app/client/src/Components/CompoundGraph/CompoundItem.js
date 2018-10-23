@@ -51,11 +51,11 @@ class CompoundItem extends React.Component {
             if (compounds_fractions.x !== null) {
               return (
                 <ListItem key={`list-${i}-x`}>
-                  <input type="number" className={classes.input} onChange={_onchangefraction} name="xMin" step={compounds_fractions.x} min="0" max="100" value={compounds_fractions.xMin} />
+                  <input type="number" className={classes.input+' '+compound} onChange={_onchangefraction} name="xMin" step={compounds_fractions.x} min="0" max="100" value={compounds_fractions.xMin} />
                   <span>&nbsp;≦&nbsp;{compounds[compound].x}&nbsp;≦&nbsp;</span>
-                  <input type="number" className={classes.input} onChange={_onchangefraction} name="xMax" step={compounds_fractions.x} min="0" max="100" value={compounds_fractions.xMax} />
+                  <input type="number" className={classes.input+' '+compound} onChange={_onchangefraction} name="xMax" step={compounds_fractions.x} min="0" max="100" value={compounds_fractions.xMax} />
                   &nbsp;step
-                  <select name='x' className={compound} onChange={_onchangefraction}>
+                  <select name='x' className={classes.input+' '+compound} onChange={_onchangefraction}>
                     <option value="10">10</option>
                     <option value="1">1</option>
                   </select>
@@ -81,11 +81,11 @@ class CompoundItem extends React.Component {
             if (compounds_fractions.y !== null) {
               return (
                 <ListItem key={`list-${i}-y`}>
-                  <input type="number" className={classes.input} onChange={_onchangefraction} name="yMin" step={compounds_fractions.y} min="0" max="100" value={compounds_fractions.yMin} />
+                  <input type="number" className={classes.input+' '+compound} onChange={_onchangefraction} name="yMin" step={compounds_fractions.y} min="0" max="100" value={compounds_fractions.yMin} />
                   <span>&nbsp;≦&nbsp;{compounds[compound].y}&nbsp;≦&nbsp;</span>
-                  <input type="number" className={classes.input} onChange={_onchangefraction} name="yMax" step={compounds_fractions.y} min="0" max="100" value={compounds_fractions.yMax} />
+                  <input type="number" className={classes.input+' '+compound} onChange={_onchangefraction} name="yMax" step={compounds_fractions.y} min="0" max="100" value={compounds_fractions.yMax} />
                   &nbsp;step
-                  <select name='y' className={compound} onChange={_onchangefraction}>
+                  <select name='y' className={classes.input+' '+compound} onChange={_onchangefraction}>
                     <option value="10">10</option>
                     <option value="1">1</option>
                   </select>

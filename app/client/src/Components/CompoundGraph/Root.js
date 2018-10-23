@@ -62,10 +62,10 @@ class Root extends React.Component {
       if (refAreaLeft > refAreaRight) [refAreaLeft, refAreaRight] = [refAreaRight, refAreaLeft];
       this.state.binaries_data.map(binary => (refAreaLeft <= binary.p) && (binary.p <= refAreaRight) && (binaries_data.push(binary)));
       compound_raws = compound_raws.map(compound_raw => compound_raw.filter(item => (refAreaLeft <= item.p) && (item.p <= refAreaRight) ))
-      left = parseInt((refAreaLeft - 0.01) * 10000, 10) / 10000
-      right = parseInt((refAreaRight + 0.01) * 10000, 10) / 10000
-      bottom = Math.floor(compound_raws.length === 0 ? 0 : parseInt((Math.min.apply(null, compound_raws.map(o => Math.min.apply(null, o.map(p => p[ylabel])))) - 0.01) * 1000, 10) / 1000)
-      top = Math.ceil(compound_raws.length === 0 ? 0 : parseInt((Math.max.apply(null, compound_raws.map(o => Math.max.apply(null, o.map(p => p[ylabel])))) + 0.01) * 1000, 10) / 1000)
+      left = parseInt((refAreaLeft - 0.01) * 10000, 10) / 10000 || left
+      right = parseInt((refAreaRight + 0.01) * 10000, 10) / 10000 || right
+      bottom = Math.floor(compound_raws.length === 0 ? 0 : parseInt((Math.min.apply(null, compound_raws.map(o => Math.min.apply(null, o.map(p => p[ylabel])))) - 0.01) * 1000, 10) / 1000) || bottom
+      top = Math.ceil(compound_raws.length === 0 ? 0 : parseInt((Math.max.apply(null, compound_raws.map(o => Math.max.apply(null, o.map(p => p[ylabel])))) + 0.01) * 1000, 10) / 1000) || top
     }
     refAreaLeft = ''
     refAreaRight = ''
@@ -75,16 +75,16 @@ class Root extends React.Component {
 
   // Zoom out func.
   zoomOut() {
-    const { compound_raws_out, binaries_data_out, ylabel } = this.state;
+    const { compound_raws_out, binaries_data_out, ylabel, left, right, bottom, top } = this.state;
     this.setState(() => ({
       compound_raws: compound_raws_out,
       binaries_data: binaries_data_out,
       refAreaLeft: '',
       refAreaRight: '',
-      left: parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p.p)))) - 0.01) * 1000, 10) / 1000,
-      right: parseInt((Math.max.apply(null, compound_raws_out.map(o => Math.max.apply(null, o.map(p => p.p)))) + 0.01) * 1000, 10) / 1000,
-      bottom: Math.floor(compound_raws_out.length === 0 ? 0 : parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p[ylabel])))) - 0.01) * 1000, 10) / 1000),
-      top: Math.ceil(compound_raws_out.length === 0 ? 0 : parseInt((Math.max.apply(null, compound_raws_out.map(o => Math.max.apply(null, o.map(p => p[ylabel])))) + 0.01) * 1000, 10) / 1000)
+      left: parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p.p)))) - 0.01) * 1000, 10) / 1000 || left,
+      right: parseInt((Math.max.apply(null, compound_raws_out.map(o => Math.max.apply(null, o.map(p => p.p)))) + 0.01) * 1000, 10) / 1000 || right,
+      bottom: Math.floor(compound_raws_out.length === 0 ? 0 : parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p[ylabel])))) - 0.01) * 1000, 10) / 1000) || bottom,
+      top: Math.ceil(compound_raws_out.length === 0 ? 0 : parseInt((Math.max.apply(null, compound_raws_out.map(o => Math.max.apply(null, o.map(p => p[ylabel])))) + 0.01) * 1000, 10) / 1000) || top
     }));
   }
 
@@ -105,7 +105,7 @@ class Root extends React.Component {
     let compounds_checked = this.state.compounds_checked.concat();
     (e.target.checked) ? compounds_checked.push(e.target.value) : compounds_checked.splice(compounds_checked.indexOf(e.target.value), 1);
     let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
-    let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
+    let [left, right, bottom, top] = temp_raws.length ? getGraphRange(temp_raws, 'p', ylabel) : [this.state.left, this.state.right, this.state.bottom, this.state.top];
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
     this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top });
@@ -115,7 +115,6 @@ class Root extends React.Component {
   _onchangeY(e) {
     const { xlabel, base_a, compounds_fractions } = this.state;
     let compounds_checked = this.state.compounds_checked.concat();
-    console.log(e.target.value)
     let ylabel = e.target.value;
     let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
@@ -133,7 +132,10 @@ class Root extends React.Component {
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
-    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, base_a, xlabel });
+    console.log(this.state.cursorPosition)
+    //let cursorPosition = {x: xlabel === "Lattice mismatch [%]" ? ( (Number(this.state.cursorPosition.x) - base_a ) / base_a * 100).toFixed(3) : ( (Number(this.state.cursorPosition.x) + 100 ) * base_a / 100).toFixed(3), y: this.state.cursorPosition.y}
+    console.log(cursorPosition)
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, base_a, xlabel, cursorPosition });
   }
 
   // Changing the lattice constant.
@@ -154,7 +156,7 @@ class Root extends React.Component {
     let compounds_checked = this.state.compounds_checked.concat();
     let compounds_fractions = JSON.parse(JSON.stringify(this.state.compounds_fractions));
     if (name) [ compounds_fractions[name][axis + 'Min'], compounds_fractions[name][axis + 'Max'] ] = [ e[0], e[1] ];
-    else compounds_fractions[e.target.className][e.target.name] = Number(e.target.value);
+    else compounds_fractions[e.target.className.split(' ')[1]][e.target.name] = Number(e.target.value);
     let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, xlabel, compounds_checked, compounds_fractions, base_a);
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
@@ -212,7 +214,6 @@ class Root extends React.Component {
               refAreaLeft={refAreaLeft}
               refAreaRight={refAreaRight}
               drag={drag}
-              cursorPosition={cursorPosition}
               _onchangeleft={this._onchangeleft}
               _onchangeright={this._onchangeright}
               _getCursorPosition={this._getCursorPosition}

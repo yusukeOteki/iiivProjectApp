@@ -1,0 +1,3 @@
+electron-packager ./app/ iiivProject --platform=win32 --arch=all --out=builds/windows
+
+electron-packager ./app/ iiivProject --platform=darwin --arch=x64 --out=builds/mac
