@@ -132,10 +132,8 @@ class Root extends React.Component {
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
-    console.log(this.state.cursorPosition)
     //let cursorPosition = {x: xlabel === "Lattice mismatch [%]" ? ( (Number(this.state.cursorPosition.x) - base_a ) / base_a * 100).toFixed(3) : ( (Number(this.state.cursorPosition.x) + 100 ) * base_a / 100).toFixed(3), y: this.state.cursorPosition.y}
-    console.log(cursorPosition)
-    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, base_a, xlabel, cursorPosition });
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, xlabel });
   }
 
   // Changing the lattice constant.

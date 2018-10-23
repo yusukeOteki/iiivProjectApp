@@ -36,8 +36,8 @@ class SettingBaseCompound extends React.Component {
       pre_compound: 'GaAs',
       pre_xFraction: 101,
       pre_yFraction: 101,
-      pre_latex: this.props.compound_data['GaAs'][0].a,
-      pre_latticeConstant: this.props.compound_data['GaAs'][0].latex
+      pre_latticeConstant: this.props.compound_data['GaAs'][0].a,
+      pre_latex: this.props.compound_data['GaAs'][0].latex
     };
 
     this.handleChange = this.handleChange.bind(this);

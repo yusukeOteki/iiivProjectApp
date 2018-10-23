@@ -5,7 +5,7 @@ const fs = require("fs");
 
 const client = require('electron-connect').client;
 const loadDevtool = require('electron-load-devtool');
-const debug = 0;
+const debug = 1;
 
 let win;
 const info_path = path.join(__dirname, '/userData.json');
