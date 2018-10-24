@@ -7,41 +7,10 @@ import { colors, compounds } from './index';
 // Chart Tag
 export default class SimpleScatterChart extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      ReferenceLine_display: 0,
-      ReferenceLine_y: 0,
-      ReferenceLine_x: 0,
-      clicks: []
-    };
-    this._onchangelineheight = this._onchangelineheight.bind(this);
-    this._onchangelineheightonMarker = this._onchangelineheightonMarker.bind(this);
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
-    return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
+    return !isEqual(nextProps, this.props);
   }
 
-  // Indicating a line func.
-  _onchangelineheight(e) {
-    (this.props.drag == 0 && e) && this.setState({ ReferenceLine_y: e.yValue, ReferenceLine_x: e.xValue, clicks: [] })
-
-    let clicks = this.state.clicks.concat();
-    clicks.push(new Date().getTime());
-    this.setState(() => ({ clicks }));
-    let timeout;
-    let time = 600;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      let clicks = this.state.clicks;
-      (clicks.length > 1 && clicks[clicks.length - 1] - clicks[clicks.length - 2] < time && e && e.yValue && e.xValue) &&
-        this.setState({ ReferenceLine_y: '', ReferenceLine_x: '', drag: 0, clicks: [] })
-    }, time);
-
-  }
-
-  // Indicating a tooltip func.
   renderTooltip(props) {
     const { active, payload } = props;
     if (active && payload && payload.length) {
@@ -59,19 +28,15 @@ export default class SimpleScatterChart extends React.Component {
     }
   }
 
-  _onchangelineheightonMarker(e) {
-    this.setState({ ReferenceLine_y: e.node.y, ReferenceLine_x: e.node.x, clicks: [] })
-  }
-
   render() {
-    const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition } = this.props;
+    const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition, _onchangelineheight, _onchangelineheightonMarker, ReferenceLine_y, ReferenceLine_x } = this.props;
     return (
       <ResponsiveContainer height={900 * 2 / 3} width="100%">
         <ScatterChart margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
-          onClick={e => this._onchangelineheight(e) || _getCursorPosition(e)}
+          onClick={e => _onchangelineheight(e) || _getCursorPosition(e)}
           onMouseDown={e => _onchangeleft(e)}
           onMouseMove={e => { e && (drag ? refAreaLeft && _onchangeright(e) : '') }}
-          onMouseUp={e => zoom(this)}
+          onMouseUp={zoom}
         >
           <CartesianGrid />
           <XAxis dataKey={'p'} type="number" domain={[left, right]} name='lattice constant'>
@@ -83,11 +48,11 @@ export default class SimpleScatterChart extends React.Component {
           <ZAxis range={[50]} />
           {Object.keys(compound_raws).map((compound, i) => {
             return !(compound_raws[compound].length > 0) ? '' :
-              <Scatter name='compounds_scatter' key={`compound-${i}`} data={compound_raws[compound]} fill={colors[Object.keys(compounds).indexOf(compound_raws[compound][0].compound)]} shape={compound_raws[compound][0].direct ? "circle" : "triangle"} onMouseUp={e => this._onchangelineheightonMarker(e)} />
+              <Scatter name='compounds_scatter' key={`compound-${i}`} data={compound_raws[compound]} fill={colors[Object.keys(compounds).indexOf(compound_raws[compound][0].compound)]} shape={compound_raws[compound][0].direct ? "circle" : "triangle"} onMouseUp={e => _onchangelineheightonMarker(e) || _getCursorPosition(e)} />
           })}
           {binaries_data.map((binary, i) => {
             return (
-              <Scatter name='binaries_scatter' key={`binary-${i}`} data={[binary]} shape={binary.direct ? "circle" : "triangle"} onMouseUp={e => this._onchangelineheightonMarker(e)} >
+              <Scatter name='binaries_scatter' key={`binary-${i}`} data={[binary]} shape={binary.direct ? "circle" : "triangle"} onMouseUp={e => _onchangelineheightonMarker(e) || _getCursorPosition(e)} >
                 <LabelList dataKey='latex' position='top' />
               </Scatter>
             )
@@ -97,8 +62,8 @@ export default class SimpleScatterChart extends React.Component {
               (<ReferenceArea x1={refAreaLeft} x2={refAreaRight} strokeOpacity={0.3} />)
           }
           <Tooltip cursor={{ strokeDasharray: '3 3' }} content={this.renderTooltip} />
-          <ReferenceLine y={this.state.ReferenceLine_y} stroke={this.state.ReferenceLine_y ? "black" : ""} />
-          <ReferenceLine x={this.state.ReferenceLine_x} stroke={this.state.ReferenceLine_x ? "black" : ""} />
+          <ReferenceLine y={ReferenceLine_y} stroke={ReferenceLine_y !== '' ? "black" : ""} />
+          <ReferenceLine x={ReferenceLine_x} stroke={ReferenceLine_x !== '' ? "black" : ""} />
         </ScatterChart>
       </ResponsiveContainer>
     )

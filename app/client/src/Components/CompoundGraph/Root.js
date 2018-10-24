@@ -35,11 +35,14 @@ class Root extends React.Component {
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
+    let ReferenceLine_y = 0;
+    let ReferenceLine_x = 0;
+    let clicks = [];
 
     this.state = {
       base_a, xlabel, ylabel, compounds_fractions, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition,
       compounds, compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out,
-      left, right, bottom, top,
+      left, right, bottom, top, ReferenceLine_y, ReferenceLine_x, clicks
     };
     this._onchange = this._onchange.bind(this);
     this._onchangeY = this._onchangeY.bind(this);
@@ -52,6 +55,8 @@ class Root extends React.Component {
     this._onchangeLatticeConstant = this._onchangeLatticeConstant.bind(this);
     this._getCursorPosition = this._getCursorPosition.bind(this);
     this._onChageFilter = this._onChageFilter.bind(this);
+    this._onchangelineheight = this._onchangelineheight.bind(this);
+    this._onchangelineheightonMarker = this._onchangelineheightonMarker.bind(this);
   }
 
   // Zoom in func.
@@ -132,8 +137,9 @@ class Root extends React.Component {
     let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
-    //let cursorPosition = {x: xlabel === "Lattice mismatch [%]" ? ( (Number(this.state.cursorPosition.x) - base_a ) / base_a * 100).toFixed(3) : ( (Number(this.state.cursorPosition.x) + 100 ) * base_a / 100).toFixed(3), y: this.state.cursorPosition.y}
-    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, xlabel });
+    let cursorPosition = {x: xlabel === "Lattice mismatch [%]" ? ( (Number(this.state.cursorPosition.x) - base_a ) / base_a * 100).toFixed(3) : ( (Number(this.state.cursorPosition.x) + 100 ) * base_a / 100).toFixed(3), y: this.state.cursorPosition.y}
+    let ReferenceLine_x = xlabel === "Lattice mismatch [%]" ? ( (Number(this.state.cursorPosition.x) - base_a ) / base_a * 100) : ( (Number(this.state.cursorPosition.x) + 100 ) * base_a / 100)
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, xlabel, cursorPosition, ReferenceLine_x });
   }
 
   // Changing the lattice constant.
@@ -164,7 +170,7 @@ class Root extends React.Component {
 
   // Indicating a cursor position
   _getCursorPosition(e) {
-    e && e.xValue && this.setState({ cursorPosition: { x: e.xValue.toFixed(3), y: e.yValue.toFixed(3) } })
+    e && (e.xValue !== undefined || e.p !== undefined) && this.setState({ cursorPosition: { x: (e.xValue || e.p).toFixed(3), y: (e.yValue || e[this.state.ylabel]).toFixed(3) } })
   }
 
 
@@ -194,9 +200,31 @@ class Root extends React.Component {
     }
     this.setState({ compounds_fractions });
   }
+  
+  // Indicating a line func.
+  _onchangelineheight(e) {
+    (this.state.drag == 0 && e) && this.setState({ ReferenceLine_y: e.yValue, ReferenceLine_x: e.xValue, clicks: [] })
+
+    let clicks = this.state.clicks.concat();
+    clicks.push(new Date().getTime());
+    this.setState(() => ({ clicks }));
+    let timeout;
+    let time = 600;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      let clicks = this.state.clicks;
+      (clicks.length > 1 && clicks[clicks.length - 1] - clicks[clicks.length - 2] < time && e && e.yValue && e.xValue) &&
+        this.setState({ ReferenceLine_y: '', ReferenceLine_x: '', drag: 0, clicks: [] })
+    }, time);
+
+  }
+
+  _onchangelineheightonMarker(e) {
+    this.setState({ ReferenceLine_y: e.node.y, ReferenceLine_x: e.node.x, clicks: [] })
+  }
 
   render() {
-    const { compounds, compounds_checked, compounds_fractions, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top } = this.state;
+    const { compounds, compounds_checked, compounds_fractions, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, base_a, ReferenceLine_y, ReferenceLine_x  } = this.state;
     const { classes } = this.props;
     const [compound_raws, binaries_data] = applyFilter(this.state.compound_raws, this.state.binaries_data, compounds_fractions);
     return (
@@ -215,12 +243,16 @@ class Root extends React.Component {
               _onchangeleft={this._onchangeleft}
               _onchangeright={this._onchangeright}
               _getCursorPosition={this._getCursorPosition}
+              _onchangelineheight={this._onchangelineheight}
+              _onchangelineheightonMarker={this._onchangelineheightonMarker}
               zoomOut={this.zoomOut}
               zoom={this.zoom}
               left={left}
               right={right}
               bottom={bottom}
               top={top}
+              ReferenceLine_y={ReferenceLine_y}
+              ReferenceLine_x={ReferenceLine_x}
             />
             <p style={{ textAlign: 'right', width: '100%' }} >x:{cursorPosition.x || '0.000'} y:{cursorPosition.y || '0.000'}</p>
             <SettingGraph compounds={compounds} compound_data={compound_data} _onchangeX={this._onchangeX} _onchangeY={this._onchangeY} zoomOut={this.zoomOut} _onchangeLatticeConstant={this._onchangeLatticeConstant} xlabels={xlabels} ylabels={ylabels} />
